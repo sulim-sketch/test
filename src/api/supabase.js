@@ -18,11 +18,22 @@ export async function searchStocks(query) {
   return res.json()
 }
 
-export async function getQuarterlyResults(stockCode) {
+export async function getQuarterlyResults(stockCode, year) {
   const url = new URL(`${BASE_URL}/quarterly_results`)
   url.searchParams.set('stock_code', `eq.${stockCode}`)
-  url.searchParams.set('order', 'bsns_year.desc,quarter.asc')
+  url.searchParams.set('bsns_year', `eq.${year}`)
+  url.searchParams.set('order', 'quarter.asc')
   url.searchParams.set('select', 'bsns_year,quarter,revenue,operating_income,net_income,asset,liability,equity,is_consolidated')
+  const res = await fetch(url, { headers })
+  if (!res.ok) throw new Error('실적 조회 실패')
+  return res.json()
+}
+
+export async function getAnnualResults(stockCode, year) {
+  const url = new URL(`${BASE_URL}/annual_results`)
+  url.searchParams.set('stock_code', `eq.${stockCode}`)
+  url.searchParams.set('bsns_year', `eq.${year}`)
+  url.searchParams.set('select', 'bsns_year,revenue,operating_income,net_income,asset,liability,equity,is_consolidated')
   const res = await fetch(url, { headers })
   if (!res.ok) throw new Error('실적 조회 실패')
   return res.json()

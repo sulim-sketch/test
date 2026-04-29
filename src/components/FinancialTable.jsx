@@ -54,7 +54,7 @@ function isNegative(raw) {
   return !isNaN(n) && n < 0
 }
 
-export default function FinancialTable({ stock, data, loading, error }) {
+export default function FinancialTable({ stock, data, mode, year, loading, error }) {
   if (loading) {
     return <div className="ft-status">실적 데이터를 불러오는 중...</div>
   }
@@ -67,11 +67,13 @@ export default function FinancialTable({ stock, data, loading, error }) {
   }
 
   const isConsolidated = data[0]?.is_consolidated
-  const columns = data.map((r) => ({
-    key: `${r.bsns_year}-${r.quarter}`,
-    label: `${r.bsns_year} ${r.quarter}Q`,
-    data: r,
-  }))
+  const columns = mode === 'annual'
+    ? [{ key: year, label: `${year}년`, data: data[0] }]
+    : data.map((r) => ({
+        key: `${r.bsns_year}-${r.quarter}`,
+        label: `${r.bsns_year} ${r.quarter}Q`,
+        data: r,
+      }))
 
   return (
     <div className="ft-container">
