@@ -10,6 +10,7 @@ const ACCOUNTS = [
 ]
 
 // 단위: 원(KRW)
+const SIPMAN   = 100_000             // 십만원
 const CHUNMAN  = 10_000_000          // 천만원
 const JO       = 1_000_000_000_000  // 1조
 const EOK      = 100_000_000        // 1억
@@ -19,29 +20,33 @@ function formatValue(raw) {
   const n = Number(raw)
   if (!raw || raw === '' || isNaN(n)) return '-'
 
-  const sign = n < 0 ? '-' : ''
-  // 천만원 단위로 반올림
-  const rounded = Math.round(Math.abs(n) / CHUNMAN) * CHUNMAN
+  const negative = n < 0
+  const abs = Math.abs(n)
+
+  // 1억 미만은 십만원 단위, 이상은 천만원 단위로 반올림
+  const unit = abs < EOK ? SIPMAN : CHUNMAN
+  const rounded = Math.round(abs / unit) * unit
   if (rounded === 0) return '0'
 
+  let formatted
   if (rounded >= JO) {
     const jo = Math.floor(rounded / JO)
     const eokRem = Math.floor((rounded % JO) / EOK)
-    return sign + (eokRem > 0 ? `${jo}조 ${eokRem}억` : `${jo}조`)
-  }
-
-  if (rounded >= BAEK_EOK) {
+    formatted = eokRem > 0 ? `${jo}조 ${eokRem}억` : `${jo}조`
+  } else if (rounded >= BAEK_EOK) {
     const eok = Math.round(rounded / EOK)
-    return sign + `${eok}억`
+    formatted = `${eok}억`
+  } else if (rounded >= EOK) {
+    const eok = Math.floor(rounded / EOK)
+    const man = Math.floor((rounded % EOK) / 10_000)
+    if (eok > 0 && man > 0) formatted = `${eok}억 ${man.toLocaleString()}만`
+    else                     formatted = `${eok}억`
+  } else {
+    const man = Math.floor(rounded / 10_000)
+    formatted = `${man.toLocaleString()}만`
   }
 
-  // 100억 미만: x억 x만원
-  const eok = Math.floor(rounded / EOK)
-  const man = Math.floor((rounded % EOK) / 10_000)  // 만원 환산
-
-  if (eok > 0 && man > 0) return sign + `${eok}억 ${man.toLocaleString()}만`
-  if (eok > 0)             return sign + `${eok}억`
-  return sign + `${man.toLocaleString()}만`
+  return negative ? `(${formatted})` : formatted
 }
 
 function isNegative(raw) {
