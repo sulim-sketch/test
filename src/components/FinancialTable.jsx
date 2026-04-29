@@ -12,15 +12,35 @@ const ACCOUNTS = [
 function formatValue(raw) {
   const n = Number(raw)
   if (!raw || raw === '' || isNaN(n)) return '-'
-  const abs = Math.abs(n)
+
   const sign = n < 0 ? '-' : ''
-  if (abs >= 1_000_000) {
-    return `${sign}${(abs / 1_000_000).toFixed(1)}조`
+  // 천만원(= 10 백만원) 단위로 반올림
+  const rounded = Math.round(Math.abs(n) / 10) * 10
+  if (rounded === 0) return '0'
+
+  const JO       = 1_000_000  // 1조 in 백만원
+  const EOK      = 100        // 1억 in 백만원
+  const BAEK_EOK = 10_000     // 100억 in 백만원
+
+  if (rounded >= JO) {
+    const jo = Math.floor(rounded / JO)
+    const eokRem = Math.floor((rounded % JO) / EOK)
+    return sign + (eokRem > 0 ? `${jo}조 ${eokRem}억` : `${jo}조`)
   }
-  if (abs >= 10_000) {
-    return `${sign}${Math.round(abs / 10_000).toLocaleString()}억`
+
+  if (rounded >= BAEK_EOK) {
+    const eok = Math.round(rounded / EOK)
+    return sign + `${eok}억`
   }
-  return `${sign}${Math.round(abs / 100).toLocaleString()}억`
+
+  // 100억 미만: x억 x만원
+  const eok = Math.floor(rounded / EOK)
+  const subEokBaekman = rounded % EOK   // 1억 미만 백만원 (10의 배수)
+  const man = subEokBaekman * 100       // 만원 환산 (1 백만원 = 100 만원)
+
+  if (eok > 0 && man > 0) return sign + `${eok}억 ${man.toLocaleString()}만`
+  if (eok > 0)             return sign + `${eok}억`
+  return sign + `${man.toLocaleString()}만`
 }
 
 function isNegative(raw) {
