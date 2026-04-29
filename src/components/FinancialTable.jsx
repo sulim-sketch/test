@@ -9,18 +9,20 @@ const ACCOUNTS = [
   { key: 'equity',           label: '자본총계' },
 ]
 
+// 단위: 원(KRW)
+const CHUNMAN  = 10_000_000          // 천만원
+const JO       = 1_000_000_000_000  // 1조
+const EOK      = 100_000_000        // 1억
+const BAEK_EOK = 10_000_000_000     // 100억
+
 function formatValue(raw) {
   const n = Number(raw)
   if (!raw || raw === '' || isNaN(n)) return '-'
 
   const sign = n < 0 ? '-' : ''
-  // 천만원(= 10 백만원) 단위로 반올림
-  const rounded = Math.round(Math.abs(n) / 10) * 10
+  // 천만원 단위로 반올림
+  const rounded = Math.round(Math.abs(n) / CHUNMAN) * CHUNMAN
   if (rounded === 0) return '0'
-
-  const JO       = 1_000_000  // 1조 in 백만원
-  const EOK      = 100        // 1억 in 백만원
-  const BAEK_EOK = 10_000     // 100억 in 백만원
 
   if (rounded >= JO) {
     const jo = Math.floor(rounded / JO)
@@ -35,8 +37,7 @@ function formatValue(raw) {
 
   // 100억 미만: x억 x만원
   const eok = Math.floor(rounded / EOK)
-  const subEokBaekman = rounded % EOK   // 1억 미만 백만원 (10의 배수)
-  const man = subEokBaekman * 100       // 만원 환산 (1 백만원 = 100 만원)
+  const man = Math.floor((rounded % EOK) / 10_000)  // 만원 환산
 
   if (eok > 0 && man > 0) return sign + `${eok}억 ${man.toLocaleString()}만`
   if (eok > 0)             return sign + `${eok}억`
@@ -72,7 +73,7 @@ export default function FinancialTable({ stock, data, loading, error }) {
       <div className="ft-header">
         <span className="ft-title">{stock.ISU_ABBRV}</span>
         <span className="ft-meta">
-          {stock.ISU_SRT_CD} · {isConsolidated ? '연결' : '별도'} · 단위: 백만원
+          {stock.ISU_SRT_CD} · {isConsolidated ? '연결' : '별도'}
         </span>
       </div>
       <div className="ft-scroll">
