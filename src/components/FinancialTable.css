@@ -1,0 +1,96 @@
+.ft-status {
+  margin-top: 48px;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.ft-error {
+  color: #ef4444;
+}
+
+.ft-container {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 48px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.ft-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ft-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.ft-meta {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.ft-scroll {
+  overflow-x: auto;
+}
+
+.ft-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ft-table thead {
+  background: #f9fafb;
+}
+
+.ft-table th {
+  padding: 10px 16px;
+  text-align: right;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ft-table th.ft-label-col {
+  text-align: left;
+}
+
+.ft-table td {
+  padding: 11px 16px;
+  text-align: right;
+  color: #1f2937;
+  border-bottom: 1px solid #f3f4f6;
+  white-space: nowrap;
+}
+
+.ft-table td.ft-label-col {
+  text-align: left;
+  font-weight: 500;
+  color: #374151;
+  background: #fafafa;
+}
+
+.ft-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ft-table tbody tr:hover td {
+  background: #f0f7ff;
+}
+
+.ft-table tbody tr:hover td.ft-label-col {
+  background: #e8f1fd;
+}
+
+.ft-neg {
+  color: #ef4444;
+}
